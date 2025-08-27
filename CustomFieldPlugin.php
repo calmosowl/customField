@@ -40,13 +40,19 @@ class CustomFieldPlugin extends GenericPlugin
     return 'Додає поле користувача, яке можна виводити в шаблонах.';
   }
 
-  public function addVariables($hookName, $args) {
-      $templateMgr = $args[0];
-      $request = \Application::get()->getRequest();
-      $context = $request->getContext();
-      $customValue = $this->getSetting($context->getId(), 'customText') ?? '';
-      $templateMgr->assign('customText', $customValue);
-      return false;
+  public function addVariables($hookName, $args)
+  {
+    $templateMgr = $args[0];
+    $request = \Application::get()->getRequest();
+    $context = $request->getContext();
+
+    $customFields = [];
+    foreach (CustomFieldMap::getFields() as $fieldName => $label) {
+      $customFields[$fieldName] = $this->getSetting($context->getId(), $fieldName) ?? '';
+    }
+
+    $templateMgr->assign('customFields', $customFields);
+    return false;
   }
 
   public function manage($args, $request)

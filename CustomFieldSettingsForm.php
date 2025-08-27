@@ -2,7 +2,6 @@
 namespace APP\plugins\generic\customField;
 
 use PKP\form\Form;
-use PKP\core\JSONMessage;
 
 class CustomFieldSettingsForm extends Form
 {
@@ -18,21 +17,20 @@ class CustomFieldSettingsForm extends Form
     $this->contextId = $contextId;
 
     parent::__construct($plugin->getTemplateResource('settingsForm.tpl'));
-
-    // Validation rule
-    $this->addCheck(new \PKP\form\validation\FormValidator($this, 'customText', 'required', 'plugins.generic.customField.settings.customTextRequired'));
   }
 
   public function initData()
   {
-    $this->_data = [
-      'customText' => $this->plugin->getSetting($this->contextId, 'customText')
-    ];
+    $data = [];
+    foreach (CustomFieldMap::getFields() as $fieldName => $label) {
+      $data[$fieldName] = $this->plugin->getSetting($this->contextId, $fieldName);
+    }
+    $this->_data = $data;
   }
 
   public function readInputData()
   {
-    $this->readUserVars(['customText']);
+    $this->readUserVars(array_keys(CustomFieldMap::getFields()));
   }
 
   public function fetch($request, $template = null, $display = false)
@@ -40,7 +38,8 @@ class CustomFieldSettingsForm extends Form
     $templateMgr = \TemplateManager::getManager($request);
     $router = $request->getRouter();
 
-    // Generate action URL for Ajax form
+    $templateMgr->assign('fields', CustomFieldMap::getFields());
+    $templateMgr->assign('fieldValues', $this->_data); // <--- додати оце
     $templateMgr->assign('formActionUrl', $router->url(
       $request, null, null, 'manage', null, [
         'verb' => 'settings',
@@ -54,12 +53,14 @@ class CustomFieldSettingsForm extends Form
 
   public function execute(...$functionArgs)
   {
-    $this->plugin->updateSetting(
-      $this->contextId,
-      'customText',
-      $this->getData('customText'),
-      'string'
-    );
+    foreach (CustomFieldMap::getFields() as $fieldName => $label) {
+      $this->plugin->updateSetting(
+        $this->contextId,
+        $fieldName,
+        $this->getData($fieldName),
+        'string'
+      );
+    }
     parent::execute(...$functionArgs);
   }
 }
