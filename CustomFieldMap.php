@@ -9,9 +9,8 @@ class CustomFieldMap
   public static function getFields(): array
   {
     return [
-      'customText' => 'Custom Text',
-      'customLink' => 'Custom Link',
-      'customColor' => 'Custom Color',
+      'email' => 'Email',
+      'phone' => 'Phone',
     ];
   }
 }

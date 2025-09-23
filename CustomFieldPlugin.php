@@ -4,6 +4,7 @@ namespace APP\plugins\generic\customField;
 use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
 use APP\plugins\generic\customField\CustomFieldSettingsForm;
+use PKP\core\JSONMessage;
 
 class CustomFieldPlugin extends GenericPlugin
 {
@@ -62,16 +63,15 @@ class CustomFieldPlugin extends GenericPlugin
 
     require_once(__DIR__ . '/CustomFieldSettingsForm.php');
 
-    require_once('lib/pkp/classes/core/JSONMessage.php');
     if ($request->getUserVar('save')) {
         $form = new CustomFieldSettingsForm($this, $contextId);
         $form->readInputData();
         $form->execute();
-        return new \JSONMessage(true);
+        return new JSONMessage(true);
     } else {
         $form = new CustomFieldSettingsForm($this, $contextId);
         $form->initData();
-        return new \JSONMessage(true, $form->fetch($request));
+        return new JSONMessage(true, $form->fetch($request));
     }
 }
 

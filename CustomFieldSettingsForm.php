@@ -2,6 +2,7 @@
 namespace APP\plugins\generic\customField;
 
 use PKP\form\Form;
+use PKP\template\PKPTemplateManager;
 
 class CustomFieldSettingsForm extends Form
 {
@@ -35,7 +36,7 @@ class CustomFieldSettingsForm extends Form
 
   public function fetch($request, $template = null, $display = false)
   {
-    $templateMgr = \TemplateManager::getManager($request);
+    $templateMgr = PKPTemplateManager::getManager($request);
     $router = $request->getRouter();
 
     $templateMgr->assign('fields', CustomFieldMap::getFields());
