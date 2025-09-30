@@ -5,6 +5,7 @@ use PKP\plugins\GenericPlugin;
 use PKP\plugins\Hook;
 use APP\plugins\generic\customField\CustomFieldSettingsForm;
 use PKP\core\JSONMessage;
+use APP\core\Application;
 
 class CustomFieldPlugin extends GenericPlugin
 {
@@ -44,7 +45,7 @@ class CustomFieldPlugin extends GenericPlugin
   public function addVariables($hookName, $args)
   {
     $templateMgr = $args[0];
-    $request = \Application::get()->getRequest();
+    $request = Application::get()->getRequest();
     $context = $request->getContext();
 
     $customFields = [];
